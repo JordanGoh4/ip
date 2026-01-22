@@ -44,6 +44,23 @@ public class BondForger {
                 continue;
             }
 
+            if (command.equals("delete")) {
+                if (parts.length < 2) {
+                    throw new Bark("Please specify which task to delete.");
+                }
+                int task_number = Integer.parseInt(parts[1]) - 1;
+                if (task_number < 0 || task_number >= library.size()) {
+                    throw new Bark("That task number does not exist.");
+                }
+                Task removed = library.remove(task_number);
+                System.out.println("____________________________________________________________");
+                System.out.println("Woof! No more task!");
+                System.out.println("  " + removed);
+                System.out.println("Now you have " + library.size() + " tasks in the list.");
+                System.out.println("____________________________________________________________");
+                continue;
+            }
+
             if (command.equals("list")) {
                 System.out.println("____________________________________________________________");
                 System.out.println("Here are the tasks in your list:");
