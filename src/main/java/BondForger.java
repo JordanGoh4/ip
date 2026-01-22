@@ -5,18 +5,19 @@ public class BondForger {
         String name = "Bond Forger";
         List<Task> library = new ArrayList<>();
         String greeting = " ___________________________\n"
-                + "Hello! I'm " +  name + "\n"
+                + "Hello! I'm " + name + "\n"
                 + "What can I do for you?\n"
                 + "___________________________\n";
         System.out.println(greeting);
         Scanner input = new Scanner(System.in);
         boolean check = true;
-        while (check){
+        while (check) {
+            try{
             String user = input.nextLine();
             String[] parts = user.split(" ", 2); // Split into max 2 parts
             String command = parts[0];
 
-            if (command.equals("bye")){
+            if (command.equals("bye")) {
                 check = false;
                 continue;
             }
@@ -43,17 +44,20 @@ public class BondForger {
                 continue;
             }
 
-            if (command.equals("list")){
+            if (command.equals("list")) {
                 System.out.println("____________________________________________________________");
                 System.out.println("Here are the tasks in your list:");
-                for (int x = 0; x < library.size() ; x++){
-                    System.out.println((x+1) + "." + library.get(x));
+                for (int x = 0; x < library.size(); x++) {
+                    System.out.println((x + 1) + "." + library.get(x));
                 }
                 System.out.println("____________________________________________________________");
                 continue;
             }
 
             if (command.equals("todo")) {
+                if (parts[1].trim().isEmpty()){
+                    throw new Bark("Borf! No empty.");
+                }
                 String description = parts[1];
                 Task t = new ToDo(description);
                 library.add(t);
@@ -93,7 +97,14 @@ public class BondForger {
                 System.out.println("____________________________________________________________");
                 continue;
             }
-        }
+
+            throw new Bark("Bark Bark intruder alert!");
+        } catch (Bark e) {
+                System.out.println("____________________________________________________________");
+                System.out.println(" OOPS!!! " + e.getMessage());
+                System.out.println("____________________________________________________________");
+            }
+    }
         String farewell = "____________________________________________________________\n"
                 + "Woof. Hope to see you again soon!\n"
                 + "____________________________________________________________\n";
@@ -161,6 +172,12 @@ public class BondForger {
         @Override
         public String toString() {
             return "[T]" + super.toString();
+        }
+    }
+
+    public static class Bark extends Exception {
+        public Bark(String message) {
+            super(message);
         }
     }
 }
