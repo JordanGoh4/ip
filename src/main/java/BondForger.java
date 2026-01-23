@@ -14,7 +14,7 @@ public class BondForger {
         while (check) {
             try{
             String user = input.nextLine();
-            String[] parts = user.split(" ", 2); // Split into max 2 parts
+            String[] parts = user.split(" ", 2);
             String command = parts[0];
 
             if (command.equals("bye")) {
@@ -24,6 +24,9 @@ public class BondForger {
 
             if (command.equals("mark")) {
                 int task_number = Integer.parseInt(parts[1]) - 1;
+                if (task_number < 0 || task_number >= library.size()) {
+                    throw new Bark("That task number does not exist.");
+                }
                 Task v = library.get(task_number);
                 System.out.println("____________________________________________________________");
                 System.out.println("Woof! I have marked this task as done:");
@@ -35,6 +38,9 @@ public class BondForger {
 
             if (command.equals("unmark")) {
                 int task_number = Integer.parseInt(parts[1]) - 1;
+                if (task_number < 0 || task_number >= library.size()) {
+                    throw new Bark("That task number does not exist.");
+                }
                 Task v = library.get(task_number);
                 System.out.println("____________________________________________________________");
                 System.out.println("Woof! I have marked this task as undone:");
