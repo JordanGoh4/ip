@@ -1,5 +1,7 @@
+import java.time.LocalDate;
 import java.util.*;
 import java.io.*;
+import java.time.LocalDateTime;
 // text file is the database, load database into the array first and only overwrite when it is done.
 public class BondForger {
     public static void main(String[] args) throws IOException {
@@ -219,20 +221,20 @@ public class BondForger {
     }
 
     public static class Event extends Task{
-        protected String start;
-        protected String end;
+        protected LocalDateTime start;
+        protected LocalDateTime end;
 
         public Event(String start, String end, String description){
             super(description);
-            this.end = end;
-            this.start = start;
+            this.end = LocalDateTime.parse(end);
+            this.start = LocalDateTime.parse(start);
         }
 
-        public String getStart(){
+        public LocalDateTime getStart(){
             return this.start;
         }
 
-        public String getEnd(){
+        public LocalDateTime getEnd(){
             return this.end;
         }
 
@@ -243,14 +245,14 @@ public class BondForger {
     }
 
     public static class Deadline extends Task {
-        protected String by;
+        protected LocalDate by;
 
         public Deadline(String description, String by) {
             super(description);
-            this.by = by;
+            this.by = LocalDate.parse(by);
         }
 
-        public String getBy() {
+        public LocalDate getBy() {
             return by;
         }
 
