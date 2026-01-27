@@ -1,4 +1,6 @@
-ToDo|1|read book
-Deadline|0|return book|May 15th
-Event|1|meeting|August 6th 2pm|4pm
-ToDo|0|get the dog
+
+ToDo|X|read book
+Deadline|X|return book|May 15th
+Event|X|meeting|August 6th 2pm|4pm
+ToDo| |get the dog
+Deadline| |eat cake|June 17th

@@ -1,12 +1,11 @@
 import java.util.*;
 import java.io.*;
-
+// text file is the database, load database into the array first and only overwrite when it is done.
 public class BondForger {
     public static void main(String[] args) throws IOException {
         String name = "Bond Forger";
         String filePath = "ip/src/main/java/data.txt";
         File f = new File(filePath);
-        FileWriter fw = new FileWriter(filePath, true);
         Scanner file = new Scanner(f);
         List<Task> library = new ArrayList<>();
         // Can create a function here
@@ -15,7 +14,7 @@ public class BondForger {
             if (array[0].equals("ToDo")){
                 String description = array[2];
                 int status = 0;
-                if (array[1].equals("1")){
+                if (array[1].equals("X")){
                     status = 1;
                 }
                 Task t = new ToDo(description);
@@ -26,7 +25,7 @@ public class BondForger {
                 String description = array[2];
                 String date = array[3];
                 int status = 0;
-                if (array[1].equals("1")){
+                if (array[1].equals("X")){
                     status = 1;
                 }
                 Task t = new Deadline(description,date);
@@ -38,7 +37,7 @@ public class BondForger {
                 int status = 0;
                 String start = array[3];
                 String end = array[4];
-                if (array[1].equals("1")){
+                if (array[1].equals("X")){
                     status = 1;
                 }
                 Task t = new Event(start, end, description);
@@ -124,11 +123,8 @@ public class BondForger {
                     throw new Bark("Borf! No empty.");
                 }
                 String description = parts[1];
-                String newTask = "ToDo|" + 0 + "|" + description;
                 Task t = new ToDo(description);
-//                library.add(t);
-                fw.write("\n" + newTask);
-                fw.flush();
+                library.add(t);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -141,10 +137,8 @@ public class BondForger {
                 String[] deadlineParts = parts[1].split(" /by ", 2);
                 String description = deadlineParts[0];
                 String by = deadlineParts[1];
-                String newTask = "Deadline|" + 0 + "|" + description + "|" + by;
-                fw.write("\n" + newTask);
-                fw.flush();
                 Task t = new Deadline(description, by);
+                library.add(t);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -159,9 +153,7 @@ public class BondForger {
                 String start = eventParts[1];
                 String end = eventParts[2];
                 Task t = new Event(start, end, description);
-                String newTask = "ToDo|" + 0 + "|" + description + "|" + start + "|" + end;
-                fw.write("\n" + newTask);
-                fw.flush();
+                library.add(t);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -177,6 +169,25 @@ public class BondForger {
                 System.out.println("____________________________________________________________");
             }
     }
+        FileWriter fw = new FileWriter(filePath);
+        for (Task x : library){
+            if (x instanceof Event){
+                String newTask = "Event|" + x.getStatus() + "|" + x.description + "|" +
+                        ((Event) x).getStart() + "|" + ((Event) x).getEnd();
+                fw.write("\n" + newTask);
+                fw.flush();
+            }
+            if (x instanceof Deadline){
+                String newTask = "Deadline|" + x.getStatus() + "|" + x.description + "|" + ((Deadline) x).getBy();
+                fw.write("\n" + newTask);
+                fw.flush();
+            }
+            if (x instanceof ToDo){
+                String newTask = "ToDo|" + x.getStatus() + "|" + x.description;
+                fw.write("\n" + newTask);
+                fw.flush();
+            }
+        }
         fw.close();
         String farewell = "____________________________________________________________\n"
                 + "Woof. Hope to see you again soon!\n"
@@ -217,6 +228,14 @@ public class BondForger {
             this.start = start;
         }
 
+        public String getStart(){
+            return this.start;
+        }
+
+        public String getEnd(){
+            return this.end;
+        }
+
         @Override
         public String toString() {
             return "[E]" + super.toString() + " (from: " + start + " to: " + end + ")";
@@ -229,6 +248,10 @@ public class BondForger {
         public Deadline(String description, String by) {
             super(description);
             this.by = by;
+        }
+
+        public String getBy() {
+            return by;
         }
 
         @Override
