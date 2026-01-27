@@ -1,6 +1,6 @@
 
 ToDo|X|read book
-Deadline|X|return book|May 15th
-Event|X|meeting|August 6th 2pm|4pm
+Deadline|X|return book|11/4/2026 2200
+Event|X|meeting|8/12/2025 1820|9/12/2025 1900
 ToDo| |get the dog
-Deadline| |eat cake|June 17th
+Deadline| |eat cake|9/11/2026 2100

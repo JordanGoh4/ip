@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ public class BondForger {
         File f = new File(filePath);
         Scanner file = new Scanner(f);
         List<Task> library = new ArrayList<>();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         // Can create a function here
         while (file.hasNext()){
             String[] array = file.nextLine().split("\\|");
@@ -25,7 +27,7 @@ public class BondForger {
             }
             if (array[0].equals("Deadline")){
                 String description = array[2];
-                String date = array[3];
+                LocalDateTime date = LocalDateTime.parse(array[3], format);
                 int status = 0;
                 if (array[1].equals("X")){
                     status = 1;
@@ -37,8 +39,8 @@ public class BondForger {
             if (array[0].equals("Event")){
                 String description = array[2];
                 int status = 0;
-                String start = array[3];
-                String end = array[4];
+                LocalDateTime start = LocalDateTime.parse(array[3], format);
+                LocalDateTime end = LocalDateTime.parse(array[4], format);
                 if (array[1].equals("X")){
                     status = 1;
                 }
@@ -139,7 +141,8 @@ public class BondForger {
                 String[] deadlineParts = parts[1].split(" /by ", 2);
                 String description = deadlineParts[0];
                 String by = deadlineParts[1];
-                Task t = new Deadline(description, by);
+                LocalDateTime time = LocalDateTime.parse(by, format);
+                Task t = new Deadline(description, time);
                 library.add(t);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
@@ -152,8 +155,8 @@ public class BondForger {
             if (command.equals("event")) {
                 String[] eventParts = parts[1].split(" /from | /to ");
                 String description = eventParts[0];
-                String start = eventParts[1];
-                String end = eventParts[2];
+                LocalDateTime start = LocalDateTime.parse(eventParts[1], format);
+                LocalDateTime end = LocalDateTime.parse(eventParts[2], format);
                 Task t = new Event(start, end, description);
                 library.add(t);
                 System.out.println("____________________________________________________________");
@@ -224,10 +227,10 @@ public class BondForger {
         protected LocalDateTime start;
         protected LocalDateTime end;
 
-        public Event(String start, String end, String description){
+        public Event(LocalDateTime start, LocalDateTime end, String description){
             super(description);
-            this.end = LocalDateTime.parse(end);
-            this.start = LocalDateTime.parse(start);
+            this.end = end;
+            this.start = start;
         }
 
         public LocalDateTime getStart(){
@@ -245,14 +248,14 @@ public class BondForger {
     }
 
     public static class Deadline extends Task {
-        protected LocalDate by;
+        protected LocalDateTime by;
 
-        public Deadline(String description, String by) {
+        public Deadline(String description, LocalDateTime by) {
             super(description);
-            this.by = LocalDate.parse(by);
+            this.by = by;
         }
 
-        public LocalDate getBy() {
+        public LocalDateTime getBy() {
             return by;
         }
 
