@@ -1,9 +1,52 @@
+import java.io.FileNotFoundException;
 import java.util.*;
+import java.io.*;
 
 public class BondForger {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String name = "Bond Forger";
+        String filePath = "ip/src/main/java/data.txt";
+        File f = new File(filePath);
+        FileWriter fw = new FileWriter(filePath, true);
+        Scanner file = new Scanner(f);
         List<Task> library = new ArrayList<>();
+        // Can create a function here
+        while (file.hasNext()){
+            String[] array = file.nextLine().split("\\|");
+            if (array[0].equals("ToDo")){
+                String description = array[2];
+                int status = 0;
+                if (array[1].equals("1")){
+                    status = 1;
+                }
+                Task t = new ToDo(description);
+                t.setStatus(status);
+                library.add(t);
+            }
+            if (array[0].equals("Deadline")){
+                String description = array[2];
+                String date = array[3];
+                int status = 0;
+                if (array[1].equals("1")){
+                    status = 1;
+                }
+                Task t = new Deadline(description,date);
+                t.setStatus(status);
+                library.add(t);
+            }
+            if (array[0].equals("Event")){
+                String description = array[2];
+                int status = 0;
+                String start = array[3];
+                String end = array[4];
+                if (array[1].equals("1")){
+                    status = 1;
+                }
+                Task t = new Event(start, end, description);
+                t.setStatus(status);
+                library.add(t);
+            }
+        }
         String greeting = " ___________________________\n"
                 + "Hello! I'm " + name + "\n"
                 + "What can I do for you?\n"
@@ -30,7 +73,7 @@ public class BondForger {
                 Task v = library.get(task_number);
                 System.out.println("____________________________________________________________");
                 System.out.println("Woof! I have marked this task as done:");
-                v.setStatus(true);
+                v.setStatus(1);
                 System.out.println("  " + v);
                 System.out.println("____________________________________________________________");
                 continue;
@@ -44,7 +87,7 @@ public class BondForger {
                 Task v = library.get(task_number);
                 System.out.println("____________________________________________________________");
                 System.out.println("Woof! I have marked this task as undone:");
-                v.setStatus(false);
+                v.setStatus(0);
                 System.out.println("  " + v);
                 System.out.println("____________________________________________________________");
                 continue;
@@ -82,8 +125,11 @@ public class BondForger {
                     throw new Bark("Borf! No empty.");
                 }
                 String description = parts[1];
+                String newTask = "ToDo|" + 0 + "|" + description;
                 Task t = new ToDo(description);
-                library.add(t);
+//                library.add(t);
+                fw.write("\n" + newTask);
+                fw.flush();
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -96,8 +142,10 @@ public class BondForger {
                 String[] deadlineParts = parts[1].split(" /by ", 2);
                 String description = deadlineParts[0];
                 String by = deadlineParts[1];
+                String newTask = "Deadline|" + 0 + "|" + description + "|" + by;
+                fw.write("\n" + newTask);
+                fw.flush();
                 Task t = new Deadline(description, by);
-                library.add(t);
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -112,7 +160,9 @@ public class BondForger {
                 String start = eventParts[1];
                 String end = eventParts[2];
                 Task t = new Event(start, end, description);
-                library.add(t);
+                String newTask = "ToDo|" + 0 + "|" + description + "|" + start + "|" + end;
+                fw.write("\n" + newTask);
+                fw.flush();
                 System.out.println("____________________________________________________________");
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
@@ -128,6 +178,7 @@ public class BondForger {
                 System.out.println("____________________________________________________________");
             }
     }
+        fw.close();
         String farewell = "____________________________________________________________\n"
                 + "Woof. Hope to see you again soon!\n"
                 + "____________________________________________________________\n";
@@ -136,19 +187,19 @@ public class BondForger {
 
     public static class Task{
         protected String description;
-        protected boolean status;
+        protected int status;
 
         public Task(String description){
             this.description = description;
-            this.status = false;
+            this.status = 0;
         }
 
-        public void setStatus(boolean status){
+        public void setStatus(int status){
             this.status = status;
         }
 
         public String getStatus(){
-            return (this.status ? "X" : " ");
+            return (this.status == 1 ? "X" : " ");
         }
 
         @Override
