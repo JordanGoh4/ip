@@ -169,6 +169,22 @@ public class BondForger {
                 System.out.println("____________________________________________________________");
                 continue;
             }
+            List<Task> found = new ArrayList<>();
+            if (command.equals("find")) {
+                String keyword = parts[1];
+                for (Task x : library) {
+                    if (x.getDescription().contains(keyword)) {
+                        found.add(x);
+                    }
+                }
+                System.out.println("____________________________________________________________");
+                System.out.println("Here are the matching tasks in your list:");
+                for (int x = 0; x < found.size(); x++) {
+                    System.out.println((x + 1) + "." + found.get(x));
+                }
+                System.out.println("____________________________________________________________");
+                continue;
+            }
 
             throw new Bark("Bark Bark intruder alert!");
         } catch (Bark e) {
