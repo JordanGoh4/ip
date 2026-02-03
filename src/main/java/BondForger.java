@@ -1,8 +1,11 @@
-import java.time.LocalDate;
+package ip.src.main.java;
+
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDateTime;
+
+
 // text file is the database, load database into the array first and only overwrite when it is done.
 public class BondForger {
     public static void main(String[] args) throws IOException {
@@ -177,18 +180,18 @@ public class BondForger {
         FileWriter fw = new FileWriter(filePath);
         for (Task x : library){
             if (x instanceof Event){
-                String newTask = "Event|" + x.getStatus() + "|" + x.description + "|" +
+                String newTask = "Event|" + x.getStatus() + "|" + x.getDescription() + "|" +
                         ((Event) x).getStart() + "|" + ((Event) x).getEnd();
                 fw.write("\n" + newTask);
                 fw.flush();
             }
             if (x instanceof Deadline){
-                String newTask = "Deadline|" + x.getStatus() + "|" + x.description + "|" + ((Deadline) x).getBy();
+                String newTask = "Deadline|" + x.getStatus() + "|" + x.getDescription() + "|" + ((Deadline) x).getBy();
                 fw.write("\n" + newTask);
                 fw.flush();
             }
             if (x instanceof ToDo){
-                String newTask = "ToDo|" + x.getStatus() + "|" + x.description;
+                String newTask = "ToDo|" + x.getStatus() + "|" + x.getDescription();
                 fw.write("\n" + newTask);
                 fw.flush();
             }
@@ -198,87 +201,5 @@ public class BondForger {
                 + "Woof. Hope to see you again soon!\n"
                 + "____________________________________________________________\n";
         System.out.println(farewell);
-    }
-
-    public static class Task{
-        protected String description;
-        protected int status;
-
-        public Task(String description){
-            this.description = description;
-            this.status = 0;
-        }
-
-        public void setStatus(int status){
-            this.status = status;
-        }
-
-        public String getStatus(){
-            return (this.status == 1 ? "X" : " ");
-        }
-
-        @Override
-        public String toString() {
-            return "[" + getStatus() + "] " + description;
-        }
-    }
-
-    public static class Event extends Task{
-        protected LocalDateTime start;
-        protected LocalDateTime end;
-
-        public Event(LocalDateTime start, LocalDateTime end, String description){
-            super(description);
-            this.end = end;
-            this.start = start;
-        }
-
-        public LocalDateTime getStart(){
-            return this.start;
-        }
-
-        public LocalDateTime getEnd(){
-            return this.end;
-        }
-
-        @Override
-        public String toString() {
-            return "[E]" + super.toString() + " (from: " + start + " to: " + end + ")";
-        }
-    }
-
-    public static class Deadline extends Task {
-        protected LocalDateTime by;
-
-        public Deadline(String description, LocalDateTime by) {
-            super(description);
-            this.by = by;
-        }
-
-        public LocalDateTime getBy() {
-            return by;
-        }
-
-        @Override
-        public String toString() {
-            return "[D]" + super.toString() + " (by: " + by + ")";
-        }
-    }
-
-    public static class ToDo extends Task {
-        public ToDo(String description) {
-            super(description);
-        }
-
-        @Override
-        public String toString() {
-            return "[T]" + super.toString();
-        }
-    }
-
-    public static class Bark extends Exception {
-        public Bark(String message) {
-            super(message);
-        }
     }
 }
