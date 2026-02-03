@@ -16,7 +16,7 @@ public class Task{
      * 
      * @param description The description of the task
      */
-    public Task(String description){
+    public Task(String description) {
         this.description = description;
         this.status = 0;
     }
@@ -26,7 +26,7 @@ public class Task{
      * 
      * @param status The status to set (1 for completed, 0 for not completed)
      */
-    public void setStatus(int status){
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -35,7 +35,7 @@ public class Task{
      * 
      * @return "X" if the task is completed, " " (space) if not completed
      */
-    public String getStatus(){
+    public String getStatus() {
         return (this.status == 1 ? "X" : " ");
     }
 
