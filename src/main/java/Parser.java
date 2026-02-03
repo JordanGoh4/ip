@@ -13,7 +13,7 @@ public class Parser {
      * Types of supported commands.
      */
     public enum CommandType {
-        BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT
+        BYE, LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND
     }
 
     /**
@@ -60,6 +60,11 @@ public class Parser {
             return new ParsedCommand(CommandType.BYE, -1, null, null, null, null);
         case "list":
             return new ParsedCommand(CommandType.LIST, -1, null, null, null, null);
+        case "find":
+            if (rest.trim().isEmpty()) {
+                throw new Bark("Please provide a search keyword.");
+            }
+            return new ParsedCommand(CommandType.FIND, -1, rest.trim(), null, null, null);
         case "mark":
             return new ParsedCommand(CommandType.MARK, parseIndex(rest), null, null, null, null);
         case "unmark":

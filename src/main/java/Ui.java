@@ -130,5 +130,14 @@ public class Ui {
         System.out.println("  " + task);
         System.out.println(LINE);
     }
+
+    public void showFound(List<Task> found) {
+        System.out.println(LINE);
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < found.size(); i++) {
+            System.out.println((i + 1) + "." + found.get(i));
+        }
+        System.out.println(LINE);
+    }
 }
 

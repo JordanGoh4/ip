@@ -10,7 +10,7 @@ import java.util.List;
  * @author Jordan
  */
 public class TaskList {
-    private final List<Task> tasks;
+    private final ArrayList<Task> tasks;
 
     /**
      * Constructs an empty TaskList.

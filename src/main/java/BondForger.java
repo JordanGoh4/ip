@@ -3,6 +3,8 @@ package ip.src.main.java;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Main entry-point for the Bond Forger chatbot.
@@ -11,7 +13,7 @@ import java.util.Scanner;
  */
 public class BondForger {
     private static final String BOT_NAME = "Bond Forger";
-    private static final String DATA_FILE_PATH = "../src/main/java/data.txt";
+    private static final String DATA_FILE_PATH = "ip/src/main/java/data.txt";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public static void main(String[] args) throws IOException {
@@ -24,6 +26,7 @@ public class BondForger {
         boolean isRunning = true;
         while (isRunning) {
             try {
+                // Parse user command into their respective command type
                 Parser.ParsedCommand command = Parser.parse(ui.readCommand(), DATE_TIME_FORMAT);
                 isRunning = execute(command, tasks, ui);
             } catch (Bark e) {
@@ -75,6 +78,16 @@ public class BondForger {
             Task task = new Event(command.start, command.end, command.description);
             tasks.add(task);
             ui.showAdded(task, tasks.size());
+            return true;
+        }
+        case FIND: {
+            List<Task> found = new ArrayList<>();
+            for (Task task : tasks.asUnmodifiableList()) {
+                if (task.getDescription().contains(command.description)) {
+                    found.add(task);
+                }
+            }
+            ui.showFound(found);
             return true;
         }
         default:
