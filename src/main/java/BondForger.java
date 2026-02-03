@@ -6,8 +6,41 @@ import java.io.*;
 import java.time.LocalDateTime;
 
 
-// text file is the database, load database into the array first and only overwrite when it is done.
+/**
+ * <h1>Bond Forger Chatbot</h1>
+ * <p>
+ * Main class to run Bond Forger chatbot. This chatbot allows users to manage tasks
+ * including ToDo items, Deadline tasks, and Event tasks. Tasks are persisted to
+ * a data file and loaded when the program starts.
+ * </p>
+ * <p>
+ * Supported commands:
+ * <ul>
+ *   <li>list - Display all tasks</li>
+ *   <li>todo [description] - Add a new ToDo task</li>
+ *   <li>deadline [description] /by [date time] - Add a new Deadline task</li>
+ *   <li>event [description] /from [date time] /to [date time] - Add a new Event task</li>
+ *   <li>mark [number] - Mark a task as completed</li>
+ *   <li>unmark [number] - Mark a task as not completed</li>
+ *   <li>delete [number] - Delete a task</li>
+ *   <li>bye - Exit the program</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Date format: d/M/yyyy HHmm (e.g., "3/2/2026 1430" for February 3, 2026 at 2:30 PM)
+ * </p>
+ *
+ * @author Jordan
+ */
 public class BondForger {
+    /**
+     * Main method that runs the Bond Forger chatbot.
+     * Loads tasks from the data file, processes user commands interactively,
+     * and saves tasks back to the data file when the program exits.
+     *
+     * @param args Command line arguments (not used)
+     * @throws IOException If there is an error reading from or writing to the data file
+     */
     public static void main(String[] args) throws IOException {
         String name = "Bond Forger";
 //        String filePath = "ip/src/main/java/data.txt";
@@ -167,22 +200,6 @@ public class BondForger {
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + t);
                 System.out.println("Now you have " + library.size() + " tasks in the list.");
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-            List<Task> found = new ArrayList<>();
-            if (command.equals("find")) {
-                String keyword = parts[1];
-                for (Task x : library) {
-                    if (x.getDescription().contains(keyword)) {
-                        found.add(x);
-                    }
-                }
-                System.out.println("____________________________________________________________");
-                System.out.println("Here are the matching tasks in your list:");
-                for (int x = 0; x < found.size(); x++) {
-                    System.out.println((x + 1) + "." + found.get(x));
-                }
                 System.out.println("____________________________________________________________");
                 continue;
             }
