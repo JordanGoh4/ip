@@ -36,7 +36,7 @@ public class Storage {
      * @throws IOException If reading the file fails.
      */
     public TaskList load() throws IOException {
-        File f = new File(filePath);
+        File f = new File(this.filePath);
         if (!f.exists()) {
             return new TaskList();
         }
