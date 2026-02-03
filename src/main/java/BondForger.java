@@ -1,205 +1,100 @@
 package ip.src.main.java;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.io.*;
-import java.time.LocalDateTime;
+import java.util.Scanner;
 
-
-// text file is the database, load database into the array first and only overwrite when it is done.
+/**
+ * Main entry-point for the Bond Forger chatbot.
+ *
+ * @author Jordan
+ */
 public class BondForger {
+    private static final String BOT_NAME = "Bond Forger";
+    private static final String DATA_FILE_PATH = "../src/main/java/data.txt";
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+
     public static void main(String[] args) throws IOException {
-        String name = "Bond Forger";
-        String filePath = "ip/src/main/java/data.txt";
-        File f = new File(filePath);
-        Scanner file = new Scanner(f);
-        List<Task> library = new ArrayList<>();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        // Can create a function here
-        while (file.hasNext()){
-            String[] array = file.nextLine().split("\\|");
-            if (array[0].equals("ToDo")){
-                String description = array[2];
-                int status = 0;
-                if (array[1].equals("X")){
-                    status = 1;
-                }
-                Task t = new ToDo(description);
-                t.setStatus(status);
-                library.add(t);
-            }
-            if (array[0].equals("Deadline")){
-                String description = array[2];
-                LocalDateTime date = LocalDateTime.parse(array[3], format);
-                int status = 0;
-                if (array[1].equals("X")){
-                    status = 1;
-                }
-                Task t = new Deadline(description,date);
-                t.setStatus(status);
-                library.add(t);
-            }
-            if (array[0].equals("Event")){
-                String description = array[2];
-                int status = 0;
-                LocalDateTime start = LocalDateTime.parse(array[3], format);
-                LocalDateTime end = LocalDateTime.parse(array[4], format);
-                if (array[1].equals("X")){
-                    status = 1;
-                }
-                Task t = new Event(start, end, description);
-                t.setStatus(status);
-                library.add(t);
+        Ui ui = new Ui(new Scanner(System.in));
+        Storage storage = new Storage(DATA_FILE_PATH, DATE_TIME_FORMAT);
+        TaskList tasks = storage.load();
+
+        ui.showGreeting(BOT_NAME);
+
+        boolean isRunning = true;
+        while (isRunning) {
+            try {
+                Parser.ParsedCommand command = Parser.parse(ui.readCommand(), DATE_TIME_FORMAT);
+                isRunning = execute(command, tasks, ui);
+            } catch (Bark e) {
+                ui.showError(e.getMessage());
             }
         }
-        String greeting = " ___________________________\n"
-                + "Hello! I'm " + name + "\n"
-                + "What can I do for you?\n"
-                + "___________________________\n";
-        System.out.println(greeting);
-        Scanner input = new Scanner(System.in);
-        boolean check = true;
-        while (check) {
-            try{
-            String user = input.nextLine();
-            String[] parts = user.split(" ", 2);
-            String command = parts[0];
 
-            if (command.equals("bye")) {
-                check = false;
-                continue;
-            }
-
-            if (command.equals("mark")) {
-                int task_number = Integer.parseInt(parts[1]) - 1;
-                if (task_number < 0 || task_number >= library.size()) {
-                    throw new Bark("That task number does not exist.");
-                }
-                Task v = library.get(task_number);
-                System.out.println("____________________________________________________________");
-                System.out.println("Woof! I have marked this task as done:");
-                v.setStatus(1);
-                System.out.println("  " + v);
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("unmark")) {
-                int task_number = Integer.parseInt(parts[1]) - 1;
-                if (task_number < 0 || task_number >= library.size()) {
-                    throw new Bark("That task number does not exist.");
-                }
-                Task v = library.get(task_number);
-                System.out.println("____________________________________________________________");
-                System.out.println("Woof! I have marked this task as undone:");
-                v.setStatus(0);
-                System.out.println("  " + v);
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("delete")) {
-                if (parts.length < 2) {
-                    throw new Bark("Please specify which task to delete.");
-                }
-                int task_number = Integer.parseInt(parts[1]) - 1;
-                if (task_number < 0 || task_number >= library.size()) {
-                    throw new Bark("That task number does not exist.");
-                }
-                Task removed = library.remove(task_number);
-                System.out.println("____________________________________________________________");
-                System.out.println("Woof! No more task!");
-                System.out.println("  " + removed);
-                System.out.println("Now you have " + library.size() + " tasks in the list.");
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("list")) {
-                System.out.println("____________________________________________________________");
-                System.out.println("Here are the tasks in your list:");
-                for (int x = 0; x < library.size(); x++) {
-                    System.out.println((x + 1) + "." + library.get(x));
-                }
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("todo")) {
-                if (parts[1].trim().isEmpty()){
-                    throw new Bark("Borf! No empty.");
-                }
-                String description = parts[1];
-                Task t = new ToDo(description);
-                library.add(t);
-                System.out.println("____________________________________________________________");
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + t);
-                System.out.println("Now you have " + library.size() + " tasks in the list.");
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("deadline")) {
-                String[] deadlineParts = parts[1].split(" /by ", 2);
-                String description = deadlineParts[0];
-                String by = deadlineParts[1];
-                LocalDateTime time = LocalDateTime.parse(by, format);
-                Task t = new Deadline(description, time);
-                library.add(t);
-                System.out.println("____________________________________________________________");
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + t);
-                System.out.println("Now you have " + library.size() + " tasks in the list.");
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            if (command.equals("event")) {
-                String[] eventParts = parts[1].split(" /from | /to ");
-                String description = eventParts[0];
-                LocalDateTime start = LocalDateTime.parse(eventParts[1], format);
-                LocalDateTime end = LocalDateTime.parse(eventParts[2], format);
-                Task t = new Event(start, end, description);
-                library.add(t);
-                System.out.println("____________________________________________________________");
-                System.out.println("Got it. I've added this task:");
-                System.out.println("  " + t);
-                System.out.println("Now you have " + library.size() + " tasks in the list.");
-                System.out.println("____________________________________________________________");
-                continue;
-            }
-
-            throw new Bark("Bark Bark intruder alert!");
-        } catch (Bark e) {
-                System.out.println("____________________________________________________________");
-                System.out.println(" OOPS!!! " + e.getMessage());
-                System.out.println("____________________________________________________________");
-            }
+        storage.save(tasks);
+        ui.showFarewell();
     }
-        FileWriter fw = new FileWriter(filePath);
-        for (Task x : library){
-            if (x instanceof Event){
-                String newTask = "Event|" + x.getStatus() + "|" + x.getDescription() + "|" +
-                        ((Event) x).getStart() + "|" + ((Event) x).getEnd();
-                fw.write("\n" + newTask);
-                fw.flush();
-            }
-            if (x instanceof Deadline){
-                String newTask = "Deadline|" + x.getStatus() + "|" + x.getDescription() + "|" + ((Deadline) x).getBy();
-                fw.write("\n" + newTask);
-                fw.flush();
-            }
-            if (x instanceof ToDo){
-                String newTask = "ToDo|" + x.getStatus() + "|" + x.getDescription();
-                fw.write("\n" + newTask);
-                fw.flush();
-            }
+
+    private static boolean execute(Parser.ParsedCommand command, TaskList tasks, Ui ui) throws Bark {
+        switch (command.type) {
+        case BYE:
+            return false;
+        case LIST:
+            ui.showTaskList(tasks);
+            return true;
+        case MARK: {
+            Task task = getTaskByIndex(command.index, tasks);
+            task.setStatus(1);
+            ui.showMarked(task);
+            return true;
         }
-        fw.close();
-        String farewell = "____________________________________________________________\n"
-                + "Woof. Hope to see you again soon!\n"
-                + "____________________________________________________________\n";
-        System.out.println(farewell);
+        case UNMARK: {
+            Task task = getTaskByIndex(command.index, tasks);
+            task.setStatus(0);
+            ui.showUnmarked(task);
+            return true;
+        }
+        case DELETE: {
+            Task removed = removeTaskByIndex(command.index, tasks);
+            ui.showDeleted(removed, tasks.size());
+            return true;
+        }
+        case TODO: {
+            Task task = new ToDo(command.description);
+            tasks.add(task);
+            ui.showAdded(task, tasks.size());
+            return true;
+        }
+        case DEADLINE: {
+            Task task = new Deadline(command.description, command.by);
+            tasks.add(task);
+            ui.showAdded(task, tasks.size());
+            return true;
+        }
+        case EVENT: {
+            Task task = new Event(command.start, command.end, command.description);
+            tasks.add(task);
+            ui.showAdded(task, tasks.size());
+            return true;
+        }
+        default:
+            throw new Bark("Bark Bark intruder alert!");
+        }
+    }
+
+    private static Task getTaskByIndex(int index, TaskList tasks) throws Bark {
+        validateIndex(index, tasks);
+        return tasks.get(index);
+    }
+
+    private static Task removeTaskByIndex(int index, TaskList tasks) throws Bark {
+        validateIndex(index, tasks);
+        return tasks.remove(index);
+    }
+
+    private static void validateIndex(int index, TaskList tasks) throws Bark {
+        if (index < 0 || index >= tasks.size()) {
+            throw new Bark("That task number does not exist.");
+        }
     }
 }
