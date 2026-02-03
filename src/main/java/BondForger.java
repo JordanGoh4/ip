@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 public class BondForger {
     public static void main(String[] args) throws IOException {
         String name = "Bond Forger";
-        String filePath = "ip/src/main/java/data.txt";
+//        String filePath = "ip/src/main/java/data.txt";
+        String filePath = "../src/main/java/data.txt";
         File f = new File(filePath);
         Scanner file = new Scanner(f);
         List<Task> library = new ArrayList<>();
