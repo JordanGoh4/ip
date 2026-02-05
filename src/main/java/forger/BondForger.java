@@ -6,12 +6,18 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+
 /**
  * Main entry-point for the Bond Forger chatbot.
  *
  * @author Jordan
  */
-public class BondForger {
+public class BondForger extends Application {
+
     private static final String BOT_NAME = "Bond Forger";
     private static final String DATA_FILE_PATH = "forger/data.txt";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
@@ -109,5 +115,14 @@ public class BondForger {
         if (index < 0 || index >= tasks.size()) {
             throw new Bark("That task number does not exist.");
         }
+    }
+
+    @Override
+    public void start(Stage stage) {
+        Label helloWorld = new Label("Hello World!"); // Creating a new Label control
+        Scene scene = new Scene(helloWorld); // Setting the scene to be our Label
+
+        stage.setScene(scene); // Setting the stage to show our scene
+        stage.show(); // Render the stage.
     }
 }
