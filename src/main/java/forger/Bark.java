@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 /**
  * Custom exception class for Bond Forger chatbot error messages.

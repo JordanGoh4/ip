@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 /**
  * Represents a task with a description and completion status.

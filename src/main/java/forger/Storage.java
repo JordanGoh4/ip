@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 import java.io.File;
 import java.io.FileWriter;

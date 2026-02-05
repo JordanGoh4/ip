@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class BondForger {
     private static final String BOT_NAME = "Bond Forger";
-    private static final String DATA_FILE_PATH = "ip/src/main/java/data.txt";
+    private static final String DATA_FILE_PATH = "forger/data.txt";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public static void main(String[] args) throws IOException {

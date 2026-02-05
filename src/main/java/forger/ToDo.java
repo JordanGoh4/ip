@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 /**
  * Represents a ToDo task, which is a simple task without any date or time constraints.

@@ -1,4 +1,4 @@
-package ip.src.main.java;
+package forger;
 
 import java.util.List;
 import java.util.Scanner;
