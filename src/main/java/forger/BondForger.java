@@ -2,20 +2,16 @@ package forger;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Region;
+
 
 /**
  * Main entry-point for the Bond Forger chatbot.
@@ -24,10 +20,14 @@ import javafx.scene.layout.Region;
  */
 public class BondForger extends Application {
 
-    private static final String BOT_NAME = "Bond Forger";
-    private static final String DATA_FILE_PATH = "forger/data.txt";
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    // Package-visible so GUI logic (Bond) can reuse the same configuration.
+    static final String BOT_NAME = "Bond Forger";
+    static final String DATA_FILE_PATH = "C:\\Users\\jorda\\OneDrive\\Desktop\\2103\\ip\\src\\main\\java\\forger\\data.txt";
+    static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
+    /**
+     * Entry point for the text-based (terminal) version.
+     */
     public static void main(String[] args) throws IOException {
         Ui ui = new Ui(new Scanner(System.in));
         Storage storage = new Storage(DATA_FILE_PATH, DATE_TIME_FORMAT);
@@ -50,7 +50,11 @@ public class BondForger extends Application {
         ui.showFarewell();
     }
 
-    private static boolean execute(Parser.ParsedCommand command, TaskList tasks, Ui ui) throws Bark {
+    /**
+     * Executes one parsed command and updates the task list.
+     * Shared by both the CLI and JavaFX GUI.
+     */
+    static boolean execute(Parser.ParsedCommand command, TaskList tasks, Ui ui) throws Bark {
         switch (command.type) {
         case BYE:
             return false;
@@ -123,95 +127,18 @@ public class BondForger extends Application {
         }
     }
 
-    private ScrollPane scrollPane;
-    private VBox dialogContainer;
-    private TextField userInput;
-    private Button sendButton;
-    private Scene scene;
-    private Image userImage = new Image(this.getClass().
-            getResourceAsStream("../images/DaUser.png"));
-    private Bond bond = new Bond();
-
     @Override
     public void start(Stage stage) {
-        //Setting up required components
-
-        scrollPane = new ScrollPane();
-        dialogContainer = new VBox();
-        scrollPane.setContent(dialogContainer);
-
-        userInput = new TextField();
-        sendButton = new Button("Send");
-
-
-        AnchorPane mainLayout = new AnchorPane();
-        mainLayout.getChildren().addAll(scrollPane, userInput, sendButton);
-
-        scene = new Scene(mainLayout);
-
-        stage.setScene(scene);
-        stage.show();
-
-        stage.setTitle("BondForger");
-        stage.setResizable(false);
-        stage.setMinHeight(600.0);
-        stage.setMinWidth(400.0);
-
-        mainLayout.setPrefSize(400.0, 600.0);
-
-        scrollPane.setPrefSize(385, 535);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
-        scrollPane.setVvalue(1.0);
-        scrollPane.setFitToWidth(true);
-
-        dialogContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
-        userInput.setPrefWidth(325.0);
-
-        sendButton.setPrefWidth(55.0);
-
-        AnchorPane.setTopAnchor(scrollPane, 1.0);
-
-        AnchorPane.setBottomAnchor(sendButton, 1.0);
-        AnchorPane.setRightAnchor(sendButton, 1.0);
-
-        AnchorPane.setLeftAnchor(userInput, 1.0);
-        AnchorPane.setBottomAnchor(userInput, 1.0);
-
-        //Handling user input
-
-        sendButton.setOnMouseClicked((event) -> {
-            handleUserInput();
-        });
-        userInput.setOnAction((event) -> {
-            handleUserInput();
-        });
-
-        //Scroll down to the end every time dialogContainer's height changes.
-        dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
-        //More code to be added here later
-    }
-
-    /**
-     * Creates a dialog box containing user input, and appends it to
-     * the dialog container. Clears the user input after processing.
-     */
-    private void handleUserInput() {
-        String userText = userInput.getText();
-        String dukeText = bond.getResponse(userInput.getText());
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(userText, userImage),
-                DialogBox.getDukeDialog(dukeText, userImage)
-        );
-        userInput.clear();
-    }
-
-    /**
-     * Generates a response for the user's chat message.
-     */
-    public String getResponse(String input) {
-        return "Bond heard: " + input;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(BondForger.class.getResource("/view/MainWindow.fxml"));
+            AnchorPane ap = fxmlLoader.load();
+            stage.setScene(new Scene(ap));
+            // Inject the chatbot logic used by the GUI.
+            fxmlLoader.<MainWindow>getController().setDuke(new Bond());
+            stage.setTitle(BOT_NAME);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
