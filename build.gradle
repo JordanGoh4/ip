@@ -54,7 +54,6 @@ application {
 
 shadowJar {
     archiveBaseName = "bondforger"
-    archiveClassifier = null
 }
 
 run{
