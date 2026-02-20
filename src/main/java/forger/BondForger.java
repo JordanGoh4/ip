@@ -107,6 +107,7 @@ public class BondForger extends Application{
             return true;
         }
         default:
+            assert false : "Unhandled command type: " + command.type;
             throw new Bark("Bark Bark intruder alert!");
         }
     }
