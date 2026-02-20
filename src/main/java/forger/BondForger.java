@@ -18,7 +18,7 @@ import javafx.stage.Stage;
  *
  * @author Jordan
  */
-public class BondForger extends Application {
+public class BondForger extends Application{
 
     // Package-visible so GUI logic (Bond) can reuse the same configuration.
     static final String BOT_NAME = "Bond Forger";
@@ -127,7 +127,7 @@ public class BondForger extends Application {
         }
     }
 
-    @Override
+//    @Override
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(BondForger.class.getResource("/view/MainWindow.fxml"));
