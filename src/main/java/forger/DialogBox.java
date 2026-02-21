@@ -24,7 +24,7 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    private DialogBox(String text, Image img, boolean isUser) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);
@@ -33,7 +33,8 @@ public class DialogBox extends HBox {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        getStyleClass().add("dialog-bubble");
+        getStyleClass().add(isUser ? "dialog-bubble-user" : "dialog-bubble-bot");
         dialog.setText(text);
         displayPicture.setImage(img);
     }
@@ -49,11 +50,11 @@ public class DialogBox extends HBox {
     }
 
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        return new DialogBox(text, img, true);
     }
 
     public static DialogBox getDukeDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
+        var db = new DialogBox(text, img, false);
         db.flip();
         return db;
     }

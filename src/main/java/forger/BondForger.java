@@ -9,6 +9,7 @@ import java.util.Scanner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -152,7 +153,9 @@ public class BondForger extends Application{
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(BondForger.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
-            stage.setScene(new Scene(ap));
+            Scene scene = new Scene(ap);
+            scene.getStylesheets().add(BondForger.class.getResource("/view/style.css").toExternalForm());
+            stage.setScene(scene);
             // Inject the chatbot logic used by the GUI.
             fxmlLoader.<MainWindow>getController().setDuke(new Bond());
             stage.setTitle(BOT_NAME);

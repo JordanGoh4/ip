@@ -49,9 +49,10 @@ public class Parser {
     public static ParsedCommand parse(String input, DateTimeFormatter formatter) throws Bark {
         validateInput(input);
 
-        String[] parts = input.split(" ", 2);
-        String command = parts[0];
-        String rest = parts.length > 1 ? parts[1] : "";
+        String trimmed = input.trim();
+        String[] parts = trimmed.split(" ", 2);
+        String command = parts[0].toLowerCase(); // commands are case-insensitive now
+        String rest = parts.length > 1 ? parts[1].trim() : "";
 
         switch (command) {
         case "bye":
