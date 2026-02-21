@@ -39,15 +39,11 @@ public class Bond {
             return "";
         }
 
-        // Create a ByteArrayOutputStream to capture output
+        // Capture output so we can show it in the GUI dialog instead of the terminal
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-
-        // Create a dummy scanner (not used for GUI)
+        PrintStream captureOut = new PrintStream(baos, true);
         Scanner dummyScanner = new Scanner("");
-
-        // Create Ui with custom output stream
-        Ui ui = new Ui(dummyScanner, ps);
+        Ui ui = new Ui(dummyScanner, captureOut);
 
         try {
             Parser.ParsedCommand parsed =

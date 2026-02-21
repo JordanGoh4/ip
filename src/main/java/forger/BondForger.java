@@ -89,12 +89,14 @@ public class BondForger extends Application{
         case DEADLINE: {
             assert command.by != null : "DEADLINE must have a non-null 'by' time";
             Task task = new Deadline(command.description, command.by);
+            checkScheduleClash(tasks, task);
             tasks.add(task);
             ui.showAdded(task, tasks.size());
             return true;
         }
         case EVENT: {
             Task task = new Event(command.start, command.end, command.description);
+            checkScheduleClash(tasks, task);
             tasks.add(task);
             ui.showAdded(task, tasks.size());
             return true;
@@ -128,6 +130,20 @@ public class BondForger extends Application{
     private static void validateIndex(int index, TaskList tasks) throws Bark {
         if (index < 0 || index >= tasks.size()) {
             throw new Bark("That task number does not exist.");
+        }
+    }
+
+    /**
+     * Throws Bark if the new task clashes in schedule with any existing task.
+     */
+    private static void checkScheduleClash(TaskList tasks, Task newTask) throws Bark {
+        List<Task> clashing = ScheduleChecker.getClashingTasks(tasks, newTask);
+        if (!clashing.isEmpty()) {
+            StringBuilder msg = new StringBuilder("Schedule clash! The following task(s) overlap with this time:");
+            for (Task t : clashing) {
+                msg.append("\n  - ").append(t);
+            }
+            throw new Bark(msg.toString());
         }
     }
 
