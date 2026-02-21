@@ -62,12 +62,14 @@ public class BondForger extends Application{
             ui.showTaskList(tasks);
             return true;
         case MARK: {
+            assert command.index >= 0;
             Task task = getTaskByIndex(command.index, tasks);
             task.setStatus(1);
             ui.showMarked(task);
             return true;
         }
         case UNMARK: {
+            assert command.index >= 0;
             Task task = getTaskByIndex(command.index, tasks);
             task.setStatus(0);
             ui.showUnmarked(task);
@@ -85,6 +87,7 @@ public class BondForger extends Application{
             return true;
         }
         case DEADLINE: {
+            assert command.by != null : "DEADLINE must have a non-null 'by' time";
             Task task = new Deadline(command.description, command.by);
             tasks.add(task);
             ui.showAdded(task, tasks.size());
