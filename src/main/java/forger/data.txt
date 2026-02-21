@@ -3,4 +3,4 @@ Deadline|X|return book|11/4/2026 2200
 Event|X|meeting|8/12/2025 1820|9/12/2025 1900
 ToDo| |get the dog
 Deadline| |eat cake|9/11/2026 2100
-Deadline| |run 4km|29/2/2000 0600
+Deadline|X|run 4km|29/2/2000 0600

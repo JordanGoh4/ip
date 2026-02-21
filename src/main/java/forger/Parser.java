@@ -47,9 +47,7 @@ public class Parser {
      * @throws Bark If the input is invalid or unsupported.
      */
     public static ParsedCommand parse(String input, DateTimeFormatter formatter) throws Bark {
-        if (input == null || input.trim().isEmpty()) {
-            throw new Bark("Please enter a command.");
-        }
+        validateInput(input);
 
         String[] parts = input.split(" ", 2);
         String command = parts[0];
@@ -57,48 +55,98 @@ public class Parser {
 
         switch (command) {
         case "bye":
-            return new ParsedCommand(CommandType.BYE, -1, null, null, null, null);
+            return createSimpleCommand(CommandType.BYE);
         case "list":
-            return new ParsedCommand(CommandType.LIST, -1, null, null, null, null);
+            return createSimpleCommand(CommandType.LIST);
         case "find":
-            if (rest.trim().isEmpty()) {
-                throw new Bark("Please provide a search keyword.");
-            }
-            return new ParsedCommand(CommandType.FIND, -1, rest.trim(), null, null, null);
+            return parseFindCommand(rest);
         case "mark":
-            return new ParsedCommand(CommandType.MARK, parseIndex(rest), null, null, null, null);
+            return createIndexCommand(CommandType.MARK, rest);
         case "unmark":
-            return new ParsedCommand(CommandType.UNMARK, parseIndex(rest), null, null, null, null);
+            return createIndexCommand(CommandType.UNMARK, rest);
         case "delete":
-            return new ParsedCommand(CommandType.DELETE, parseIndex(rest), null, null, null, null);
+            return createIndexCommand(CommandType.DELETE, rest);
         case "todo":
-            if (rest.trim().isEmpty()) {
-                throw new Bark("Borf! No empty.");
-            }
-            return new ParsedCommand(CommandType.TODO, -1, rest, null, null, null);
-        case "deadline": {
-            String[] deadlineParts = rest.split(" /by ", 2);
-            if (deadlineParts.length < 2) {
-                throw new Bark("Please use: deadline <description> /by <d/M/yyyy HHmm>");
-            }
-            String description = deadlineParts[0];
-            String byText = deadlineParts[1];
-            LocalDateTime by = LocalDateTime.parse(byText, formatter);
-            return new ParsedCommand(CommandType.DEADLINE, -1, description, by, null, null);
-        }
-        case "event": {
-            String[] eventParts = rest.split(" /from | /to ");
-            if (eventParts.length < 3) {
-                throw new Bark("Please use: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>");
-            }
-            String description = eventParts[0];
-            LocalDateTime start = LocalDateTime.parse(eventParts[1], formatter);
-            LocalDateTime end = LocalDateTime.parse(eventParts[2], formatter);
-            return new ParsedCommand(CommandType.EVENT, -1, description, null, start, end);
-        }
+            return parseTodoCommand(rest);
+        case "deadline":
+            return parseDeadlineCommand(rest, formatter);
+        case "event":
+            return parseEventCommand(rest, formatter);
         default:
             throw new Bark("Bark Bark intruder alert!");
         }
+    }
+
+    /**
+     * Validates that the input is not null or empty.
+     */
+    private static void validateInput(String input) throws Bark {
+        if (input == null || input.trim().isEmpty()) {
+            throw new Bark("Please enter a command.");
+        }
+    }
+
+    /**
+     * Creates a simple command with no additional parameters.
+     */
+    private static ParsedCommand createSimpleCommand(CommandType type) {
+        return new ParsedCommand(type, -1, null, null, null, null);
+    }
+
+    /**
+     * Creates a command that requires an index parameter.
+     */
+    private static ParsedCommand createIndexCommand(CommandType type, String rest) throws Bark {
+        return new ParsedCommand(type, parseIndex(rest), null, null, null, null);
+    }
+
+    /**
+     * Parses a find command.
+     */
+    private static ParsedCommand parseFindCommand(String rest) throws Bark {
+        if (rest.trim().isEmpty()) {
+            throw new Bark("Please provide a search keyword.");
+        }
+        return new ParsedCommand(CommandType.FIND, -1, rest.trim(), null, null, null);
+    }
+
+    /**
+     * Parses a todo command.
+     */
+    private static ParsedCommand parseTodoCommand(String rest) throws Bark {
+        if (rest.trim().isEmpty()) {
+            throw new Bark("Borf! No empty.");
+        }
+        return new ParsedCommand(CommandType.TODO, -1, rest, null, null, null);
+    }
+
+    /**
+     * Parses a deadline command with description and due date.
+     */
+    private static ParsedCommand parseDeadlineCommand(String rest, DateTimeFormatter formatter) throws Bark {
+        String[] parts = rest.split(" /by ", 2);
+        if (parts.length < 2) {
+            throw new Bark("Please use: deadline <description> /by <d/M/yyyy HHmm>");
+        }
+
+        String description = parts[0];
+        LocalDateTime by = LocalDateTime.parse(parts[1], formatter);
+        return new ParsedCommand(CommandType.DEADLINE, -1, description, by, null, null);
+    }
+
+    /**
+     * Parses an event command with description, start time, and end time.
+     */
+    private static ParsedCommand parseEventCommand(String rest, DateTimeFormatter formatter) throws Bark {
+        String[] parts = rest.split(" /from | /to ");
+        if (parts.length < 3) {
+            throw new Bark("Please use: event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>");
+        }
+
+        String description = parts[0];
+        LocalDateTime start = LocalDateTime.parse(parts[1], formatter);
+        LocalDateTime end = LocalDateTime.parse(parts[2], formatter);
+        return new ParsedCommand(CommandType.EVENT, -1, description, null, start, end);
     }
 
     private static int parseIndex(String text) throws Bark {
