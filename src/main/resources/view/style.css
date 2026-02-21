@@ -1,0 +1,71 @@
+/* Bond Forger – chat window styling */
+
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f0f2f5;
+}
+
+#scrollPane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+#scrollPane > .viewport {
+    -fx-background-color: #e8eef2;
+}
+
+#dialogContainer {
+    -fx-background-color: #e8eef2;
+}
+
+#userInput {
+    -fx-background-color: white;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-border-color: #c5d0d9;
+    -fx-border-width: 1;
+    -fx-padding: 10 16 10 16;
+    -fx-font-size: 14px;
+}
+
+#sendButton {
+    -fx-background-color: #2d7dd2;
+    -fx-text-fill: white;
+    -fx-background-radius: 22;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+#sendButton:hover {
+    -fx-background-color: #1a5fa8;
+}
+
+/* Dialog bubbles – text no longer sticks to avatar */
+.dialog-bubble {
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-spacing: 12;
+    -fx-max-width: 400;
+}
+
+.dialog-bubble-user {
+    -fx-background-color: #2d7dd2;
+}
+
+.dialog-bubble-user .label {
+    -fx-text-fill: white;
+    -fx-wrap-text: true;
+}
+
+.dialog-bubble-bot {
+    -fx-background-color: white;
+    -fx-border-color: #c5d0d9;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}
+
+.dialog-bubble-bot .label {
+    -fx-text-fill: #333;
+    -fx-wrap-text: true;
+}
