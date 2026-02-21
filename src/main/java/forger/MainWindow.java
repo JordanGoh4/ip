@@ -22,8 +22,8 @@ public class MainWindow extends AnchorPane {
 
     private Bond bond;
 
-    private final Image userImage = new Image(this.getClass().getResourceAsStream("../images/Anya.png"));
-    private final Image dukeImage = new Image(this.getClass().getResourceAsStream("../images/Bond.jpg"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/Anya.png"));
+    private final Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/Bond.jpg"));
 
     @FXML
     public void initialize() {

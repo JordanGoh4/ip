@@ -11,5 +11,4 @@ public class Launcher {
     public static void main(String[] args) throws IOException {
         Application.launch(BondForger.class, args);
     }
-
 }
