@@ -1,5 +1,6 @@
 package forger;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,16 +10,32 @@ import java.util.Scanner;
  * @author Jordan
  */
 public class Ui {
-    private static final String LINE = "____________________________________________________________";
     private final Scanner in;
+    private final PrintStream out;
 
     /**
-     * Constructs a Ui that reads from the given scanner.
+     * Constructs a Ui that reads from the given scanner and prints to System.out.
      *
      * @param in Scanner to read user input from.
      */
     public Ui(Scanner in) {
         this.in = in;
+        this.out = System.out;
+    }
+
+    /**
+     * Constructs a Ui with custom input and output (e.g. for GUI to capture output).
+     *
+     * @param in  Scanner to read user input from (can be a dummy for GUI).
+     * @param out PrintStream to write output to.
+     */
+    public Ui(Scanner in, PrintStream out) {
+        this.in = in;
+        this.out = out != null ? out : System.out;
+    }
+
+    private void println(String s) {
+        out.println(s);
     }
 
     /**
@@ -27,11 +44,10 @@ public class Ui {
      * @param name Chatbot name.
      */
     public void showGreeting(String name) {
-        String greeting = " ___________________________\n"
-                + "Hello! I'm " + name + "\n"
-                + "What can I do for you?\n"
-                + "___________________________\n";
-        System.out.println(greeting);
+        println(" ___________________________");
+        println("Hello! I'm " + name);
+        println("What can I do for you?");
+        println("___________________________");
     }
 
     /**
@@ -47,10 +63,7 @@ public class Ui {
      * Prints the farewell message.
      */
     public void showFarewell() {
-        String farewell = LINE + "\n"
-                + "Woof. Hope to see you again soon!\n"
-                + LINE + "\n";
-        System.out.println(farewell);
+        println("Woof. Hope to see you again soon!");
     }
 
     /**
@@ -59,9 +72,7 @@ public class Ui {
      * @param message Error message.
      */
     public void showError(String message) {
-        System.out.println(LINE);
-        System.out.println(" OOPS!!! " + message);
-        System.out.println(LINE);
+        println(" OOPS!!! " + message);
     }
 
     /**
@@ -70,13 +81,11 @@ public class Ui {
      * @param tasks Tasks to display.
      */
     public void showTaskList(TaskList tasks) {
-        System.out.println(LINE);
-        System.out.println("Here are the tasks in your list:");
+        println("Here are the tasks in your list:");
         List<Task> list = tasks.asUnmodifiableList();
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + "." + list.get(i));
+            println((i + 1) + "." + list.get(i));
         }
-        System.out.println(LINE);
     }
 
     /**
@@ -86,11 +95,9 @@ public class Ui {
      * @param totalTasks New total number of tasks.
      */
     public void showAdded(Task task, int totalTasks) {
-        System.out.println(LINE);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + totalTasks + " tasks in the list.");
-        System.out.println(LINE);
+        println("Got it. I've added this task:");
+        println("  " + task);
+        println("Now you have " + totalTasks + " tasks in the list.");
     }
 
     /**
@@ -100,11 +107,9 @@ public class Ui {
      * @param totalTasks New total number of tasks.
      */
     public void showDeleted(Task task, int totalTasks) {
-        System.out.println(LINE);
-        System.out.println("Woof! No more task!");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + totalTasks + " tasks in the list.");
-        System.out.println(LINE);
+        println("Woof! No more task!");
+        println("  " + task);
+        println("Now you have " + totalTasks + " tasks in the list.");
     }
 
     /**
@@ -113,10 +118,8 @@ public class Ui {
      * @param task Marked task.
      */
     public void showMarked(Task task) {
-        System.out.println(LINE);
-        System.out.println("Woof! I have marked this task as done:");
-        System.out.println("  " + task);
-        System.out.println(LINE);
+        println("Woof! I have marked this task as done:");
+        println("  " + task);
     }
 
     /**
@@ -125,19 +128,15 @@ public class Ui {
      * @param task Unmarked task.
      */
     public void showUnmarked(Task task) {
-        System.out.println(LINE);
-        System.out.println("Woof! I have marked this task as undone:");
-        System.out.println("  " + task);
-        System.out.println(LINE);
+        println("Woof! I have marked this task as undone:");
+        println("  " + task);
     }
 
     public void showFound(List<Task> found) {
-        System.out.println(LINE);
-        System.out.println("Here are the matching tasks in your list:");
+        println("Here are the matching tasks in your list:");
         for (int i = 0; i < found.size(); i++) {
-            System.out.println((i + 1) + "." + found.get(i));
+            println((i + 1) + "." + found.get(i));
         }
-        System.out.println(LINE);
     }
 }
 

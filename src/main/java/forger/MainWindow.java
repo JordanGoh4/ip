@@ -29,10 +29,8 @@ public class MainWindow extends AnchorPane {
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         // Show initial greeting like the CLI version.
-        String greeting = " ___________________________\n"
-                + "Hello! I'm " + BondForger.BOT_NAME + "\n"
-                + "What can I do for you?\n"
-                + "___________________________\n";
+        String greeting = "Hello! I'm " + BondForger.BOT_NAME + "\n"
+                + "What can I do for you?\n";
         dialogContainer.getChildren().add(
                 DialogBox.getDukeDialog(greeting, dukeImage)
         );
