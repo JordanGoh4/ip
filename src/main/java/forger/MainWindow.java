@@ -1,5 +1,6 @@
 package forger;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -7,6 +8,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
 /**
  * Controller for the main GUI.
  */
@@ -57,6 +61,14 @@ public class MainWindow extends AnchorPane {
         if (bond.shouldExit()) {
             userInput.setDisable(true);
             sendButton.setDisable(true);
+
+            // Allow the farewell message to be seen before closing the window.
+            PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+            delay.setOnFinished(event -> {
+                Stage stage = (Stage) scrollPane.getScene().getWindow();
+                stage.close();
+            });
+            delay.play();
         }
     }
 }
