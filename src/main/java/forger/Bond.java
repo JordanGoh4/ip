@@ -12,6 +12,7 @@ public class Bond {
 
     private final Storage storage;
     private final TaskList tasks;
+    private boolean shouldExit;
 
     /**
      * Creates a Bond chatbot using the same data file and date format as the CLI.
@@ -25,6 +26,7 @@ public class Bond {
             loaded = new TaskList();
         }
         this.tasks = loaded;
+        this.shouldExit = false;
     }
 
     /**
@@ -52,6 +54,7 @@ public class Bond {
             if (!keepRunning) {
                 storage.save(tasks);
                 ui.showFarewell();
+                shouldExit = true;
             }
         } catch (Bark e) {
             ui.showError(e.getMessage());
@@ -61,5 +64,14 @@ public class Bond {
 
         // Convert captured output to string
         return baos.toString();
+    }
+
+    /**
+     * Indicates whether the chatbot has been instructed to exit (via bye).
+     *
+     * @return true if the last processed command requested exit.
+     */
+    public boolean shouldExit() {
+        return shouldExit;
     }
 }
